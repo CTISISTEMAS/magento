@@ -1,0 +1,128 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/**
+ * Product view template
+ *
+ * @see \Magento\Catalog\Block\Product\View\Description
+ */
+?>
+<?php
+$_helper = $this->helper('Magento\Catalog\Helper\Output');
+$_product = $block->getProduct();
+$_call = $block->getAtCall();
+$_code = $block->getAtCode();
+$_className = $block->getCssClass();
+$_attributeLabel = $block->getAtLabel();
+$_attributeType = $block->getAtType();
+$_attributeAddAttribute = $block->getAddAttribute();
+
+$renderLabel = true;
+// if defined as 'none' in layout, do not render
+if ($_attributeLabel == 'none') {
+    $renderLabel = false;
+}
+
+if ($_attributeLabel && $_attributeLabel == 'default') {
+    $_attributeLabel = $_product->getResource()->getAttribute($_code)->getStoreLabel();
+}
+if ($_attributeType && $_attributeType == 'text') {
+    $_attributeValue = ($_helper->productAttribute($_product, $_product->$_call(), $_code)) ? $_product->getAttributeText($_code) : '';
+} else {
+    $_attributeValue = $_helper->productAttribute($_product, $_product->$_call(), $_code);
+}
+?>
+<br>
+<?php if ($_product->getResource()->getAttribute('body_style')->getFrontend()->getValue($_product) != '') : ?>
+    <div align="left" style="margin-left:-11%">
+<?php else: ?>
+    <div align="left" style="margin-left:-48%;margin-top: 20px;">
+<?php endif; ?>
+<?php if ($_attributeValue): ?>
+<div class="product attribute <?= /* @escapeNotVerified */ $_className ?>">
+    <?php if ($renderLabel): ?><strong class="type"><?= /* @escapeNotVerified */ $_attributeLabel ?></strong><?php endif; ?>
+    <div class="value" <?= /* @escapeNotVerified */ $_attributeAddAttribute ?>><?= /* @escapeNotVerified */ $_attributeValue ?></div>
+</div>
+<?php endif; ?>
+
+<?php if($_product->getResource()->getAttribute('body_style')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Body Style: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('body_style')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+<?php if ($_product->getResource()->getAttribute('vin')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Vin: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('vin')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+<?php if ($_product->getResource()->getAttribute('vehicle_class')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Vehicle Class: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('vehicle_class')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+
+<!--  Car parts attributes -->
+<?php if ($_product->getResource()->getAttribute('year')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Year: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('year')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($_product->getResource()->getAttribute('make')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Make: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('make')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($_product->getResource()->getAttribute('model')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Model: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('model')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($_product->getResource()->getAttribute('notes')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Note: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('notes')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($_product->getResource()->getAttribute('parts')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Parts: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('parts')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($_product->getResource()->getAttribute('type')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Type: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('type')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($_product->getResource()->getAttribute('stocks')->getFrontend()->getValue($_product) != '') : ?>
+<div class="productAttribute">
+    <strong>Stock: </strong>
+    <p><?php echo $_product->getResource()->getAttribute('stocks')->getFrontend()->getValue($_product); ?></p>
+</div>
+<?php endif; ?>
+</div>
+<style>
+.productAttribute {
+    /* float: left;
+    margin-left: -40% */
+}
+</style>

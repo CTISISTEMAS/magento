@@ -1,0 +1,267 @@
+<?php
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+// @codingStandardsIgnoreFile
+
+/* @var $block \Magento\Catalog\Block\Product\AbstractProduct */
+?>
+
+<?php
+switch ($type = $block->getType()) {
+
+    case 'related-rule':
+        if ($exist = $block->hasItems()) {
+            $type = 'related';
+            $class = $type;
+
+            $image = 'related_products_list';
+            $title = __('Related Products');
+            $items = $block->getAllItems();
+            $limit = $block->getPositionLimit();
+            $shuffle = (int) $block->isShuffled();
+            $canItemsAddToCart = $block->canItemsAddToCart();
+
+            $showAddTo = true;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+        }
+    break;
+
+    case 'related':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Related $block */
+        if ($exist = $block->getItems()->getSize()) {
+            $type = 'related';
+            $class = $type;
+
+            $image = 'related_products_list';
+            $title = __('Related Products');
+            $items = $block->getItems();
+            $limit = 0;
+            $shuffle = 0;
+            $canItemsAddToCart = $block->canItemsAddToCart();
+
+            $showAddTo = true;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+        }
+    break;
+
+    case 'upsell-rule':
+        if ($exist = $block->hasItems()) {
+            $type = 'upsell';
+            $class = $type;
+
+            $image = 'upsell_products_list';
+            $title = __('We found other products you might like!');
+            $items = $block->getAllItems();
+            $limit = $block->getPositionLimit();
+            $shuffle = (int) $block->isShuffled();
+
+            $showAddTo = false;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'upsell':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Upsell $block */
+        if ($exist = count($block->getItemCollection()->getItems())) {
+            $type = 'upsell';
+            $class = $type;
+
+            $image = 'upsell_products_list';
+            $title = __('We found other products you might like!');
+            $items = $block->getItemCollection()->getItems();
+            $limit = $block->getItemLimit('upsell');
+            $shuffle = 0;
+
+            $showAddTo = false;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'crosssell-rule':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Crosssell $block */
+        if ($exist = $block->hasItems()) {
+            $type = 'crosssell';
+            $class = $type;
+
+            $image = 'cart_cross_sell_products';
+            $title = __('More Choices:');
+            $items = $block->getItemCollection();
+
+            $showAddTo = true;
+            $showCart = true;
+            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+            $description = false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'crosssell':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Crosssell $block */
+        if ($exist = count($block->getItems())) {
+            $type = 'crosssell';
+            $class = $type;
+
+            $image = 'cart_cross_sell_products';
+            $title = __('More Choices:');
+            $items = $block->getItems();
+
+            $showAddTo = true;
+            $showCart = true;
+            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+            $description = false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'new':
+        if ($exist = $block->getProductCollection()) {
+            $type = 'new';
+            $mode = 'grid';
+            $type = $type . ' ' . $mode;
+
+            $class = 'widget' . ' ' . $type;
+
+            $image = 'new_products_content_widget_grid';
+            $title = __('New Products');
+            $items = $exist;
+
+            $showAddTo = true;
+            $showCart = true;
+            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+            $description = ($mode == 'list') ? true : false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    default:
+        $exist = null;
+}
+?>
+
+<?php if ($exist):?>
+
+    <?php if ($type == 'related' || $type == 'upsell'): ?>
+        <?php if ($type == 'related'): ?>
+            <div class="block <?= /* @escapeNotVerified */ $class ?>" data-mage-init='{"relatedProducts":{"relatedCheckbox":".related.checkbox"}}' data-limit="<?= /* @escapeNotVerified */ $limit ?>" data-shuffle="<?= /* @escapeNotVerified */ $shuffle ?>">
+        <?php else: ?>
+            <div class="block <?= /* @escapeNotVerified */ $class ?>" data-mage-init='{"upsellProducts":{}}' data-limit="<?= /* @escapeNotVerified */ $limit ?>" data-shuffle="<?= /* @escapeNotVerified */ $shuffle ?>">
+        <?php endif; ?>
+    <?php else: ?>
+        <div class="block <?= /* @escapeNotVerified */ $class ?>">
+    <?php endif; ?>
+    <div class="block-title title" style="width: 120px;">
+        <strong id="block-<?= /* @escapeNotVerified */ $class ?>-heading" role="heading" aria-level="2"><?= /* @escapeNotVerified */ $title ?></strong>
+    </div>
+    <div class="block-content content" aria-labelledby="block-<?= /* @escapeNotVerified */ $class ?>-heading">
+        <?php if ($type == 'related' && $canItemsAddToCart): ?>
+        <!-- <div class="block-actions">
+            <?= /* @escapeNotVerified */ __('Check items to add to the cart or') ?>
+            <button type="button" class="action select" role="select-all"><span><?= /* @escapeNotVerified */ __('select all') ?></span></button>
+        </div> -->
+        <?php endif; ?>
+        <div class="products wrapper grid products-grid products-<?= /* @escapeNotVerified */ $type ?>">
+            <!-- <ol class="products list items product-items"> -->
+                <?php $iterator = 1; ?>
+                <div class="table-responsive">
+                <table class="table rwd-table">
+                    <thead>
+                        <tr>
+                            <th>Photos</th>        
+                            <th>Year</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Type</th>
+                            <th>Sku</th>
+                            <th>Notes</th>
+                            <th>Parts#</th>        
+                            <th>Stock#</th>
+                            <th>Price</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                <?php foreach ($items as $_item): ?>
+                <?php
+
+                $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+                $product = $objectManager->create('Magento\Catalog\Model\Product')->load($_item->getId());
+                $imageUrl = $this->helper('Magento\Catalog\Helper\Image')
+                    ->init($product, 'product_base_image')
+                    ->constrainOnly(true)
+                    ->keepAspectRatio(true)
+                    ->keepTransparency(true)
+                    ->keepFrame(false)
+                    ->resize(100, 100)->getUrl();
+                // print_r($product->getData()); ?>
+                <tbody>
+                    <tr>
+                        <td data-th="Image"><img src="<?php echo $imageUrl; ?>" alt=""></td>
+                        <td data-th="Year"><?php echo $product->getData('year'); ?></td>
+                        <td data-th="Make"><?php echo $product->getData('make'); ?></td>
+                        <td data-th="Model"><?php echo $product->getData('model'); ?></td>
+                        <td data-th="Type"><?php echo $product->getData('type'); ?></td>
+                        <td data-th="Sku"><?php echo $product->getData('sku'); ?></td>
+                        <td data-th="Notes"><?php echo $product->getData('notes'); ?></td>
+                        <td data-th="Parts"><?php echo $product->getData('parts'); ?></td>
+                        <td data-th="Stock"><?php echo $product->getData('stocks'); ?></td>
+                        <td data-th="Price"><?php echo $product->getData('price'); ?></td>
+                        <td>
+                            <a href="<?php echo $product->getProductUrl(); ?>"><button class="btn btn-related">View Details</button></a>
+                        </td>
+                    </tr>
+                </tbody>
+                <?php endforeach ?>
+                </table>
+                </div>
+            <!-- </ol> -->
+        </div>
+    </div>
+</div>
+<?php endif;?>
+<style>
+        @import "https://fonts.googleapis.com/css?family=Montserrat:300,400,700";
+
+.rwd-table {
+    background: #fff;
+
+
+}
+.table-responsive{
+    overflow-x: auto;
+}
+button:not(.primary) {
+    box-shadow: none;
+}
+.btn-related{
+    border-color: #FF1744;
+    background-color: #FF1744;
+    color: #fff;
+}
+.btn-related:hover{
+    border-color: #f44336;
+    background-color: #f44336;
+    color: #fff;
+}
+
+
+h1 {
+  font-weight: normal;
+  letter-spacing: -1px;
+  color: #34495E;
+}
+
+
+
+    </style>
